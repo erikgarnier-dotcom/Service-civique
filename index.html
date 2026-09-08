@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Outil simple de suivi des volontaires et des missions de service civique."
+    />
+    <title>Suivi des Services Civiques</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="tricolour" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <header class="app-header">
+      <div class="app-header__inner">
+        <a href="#" class="app-brand" id="brand-home">
+          <span class="app-brand__mark">SC</span>
+          <span class="app-brand__text">
+            <strong>Suivi des Services Civiques</strong>
+            <small>Suivi des volontaires et de leurs missions</small>
+          </span>
+        </a>
+        <nav class="main-nav" aria-label="Navigation principale">
+          <a href="#" data-view="dashboard" class="main-nav__link active">Tableau de bord</a>
+          <a href="#" data-view="volontaires" class="main-nav__link">Volontaires</a>
+          <a href="#" data-view="missions" class="main-nav__link">Missions</a>
+          <a href="#" data-view="formations" class="main-nav__link">Formations</a>
+          <a href="#" data-view="points" class="main-nav__link">Points de suivi</a>
+          <a href="#" data-view="conges" class="main-nav__link">Congés</a>
+          <a href="#" data-view="documents" class="main-nav__link">Documents</a>
+          <a href="#" data-view="rapports" class="main-nav__link">Rapports</a>
+        </nav>
+        <button class="btn btn--primary btn--sm" id="btn-reset" title="Réinitialiser les données de démonstration">
+          Réinitialiser
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+      <!-- ======= TABLEAU DE BORD ======= -->
+      <section id="view-dashboard" class="view active">
+        <h1 class="view-title">Tableau de bord</h1>
+        <div class="stats-grid" id="dashboard-cards"></div>
+        <div class="dashboard-columns">
+          <div class="panel">
+            <h2 class="panel__title">Volontaires par statut</h2>
+            <div id="chart-status" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Missions par statut</h2>
+            <div id="chart-missions" class="bar-chart"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2 class="panel__title">Prochains points de suivi</h2>
+          <div id="dashboard-upcoming"></div>
+        </div>
+      </section>
+
+      <!-- ======= VOLONTAIRES ======= -->
+      <section id="view-volontaires" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Volontaires</h1>
+          <button class="btn btn--primary" id="btn-volontaire-add">Nouveau volontaire</button>
+        </div>
+        <div class="toolbar">
+          <input
+            type="search"
+            id="volontaires-search"
+            class="input input--search"
+            placeholder="Rechercher un volontaire (nom, email, ville)..."
+          />
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="volontaires-table">
+            <thead>
+              <tr>
+                <th>Numéro</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Ville</th>
+                <th>Situation</th>
+                <th>Volontariat</th>
+                <th>Statut</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="volontaires-body"></tbody>
+          </table>
+        </div>
+        <div id="volontaires-empty" class="empty-state" hidden>
+          <p>Aucun volontaire enregistré.</p>
+        </div>
+      </section>
+
+      <!-- ======= MISSIONS ======= -->
+      <section id="view-missions" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Missions</h1>
+          <button class="btn btn--primary" id="btn-mission-add">Nouvelle mission</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="missions-table">
+            <thead>
+              <tr>
+                <th>Mission</th>
+                <th>Volontaire</th>
+                <th>Domaine</th>
+                <th>Organisme d'accueil</th>
+                <th>Début</th>
+                <th>Fin prévisionnelle</th>
+                <th>Statut</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="missions-body"></tbody>
+          </table>
+        </div>
+        <div id="missions-empty" class="empty-state" hidden>
+          <p>Aucune mission enregistrée.</p>
+        </div>
+      </section>
+
+      <!-- ======= FORMATIONS ======= -->
+      <section id="view-formations" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Formations</h1>
+          <button class="btn btn--primary" id="btn-formation-add">Nouvelle formation</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="formations-table">
+            <thead>
+              <tr>
+                <th>Formation</th>
+                <th>Type</th>
+                <th>Volontaire</th>
+                <th>Organisme</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="formations-body"></tbody>
+          </table>
+        </div>
+        <div id="formations-empty" class="empty-state" hidden>
+          <p>Aucune formation enregistrée.</p>
+        </div>
+      </section>
+
+      <!-- ======= POINTS DE SUIVI ======= -->
+      <section id="view-points" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Points de suivi</h1>
+          <button class="btn btn--primary" id="btn-point-add">Nouveau point de suivi</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="points-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Volontaire</th>
+                <th>Mission</th>
+                <th>Type</th>
+                <th>Synthèse</th>
+                <th>Statut</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="points-body"></tbody>
+          </table>
+        </div>
+        <div id="points-empty" class="empty-state" hidden>
+          <p>Aucun point de suivi enregistré.</p>
+        </div>
+      </section>
+
+      <!-- ======= CONGÉS ======= -->
+      <section id="view-conges" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Congés des volontaires</h1>
+          <button class="btn btn--primary" id="btn-conge-add">Ajouter sur le calendrier</button>
+        </div>
+        <p class="view-intro">
+          Choisissez un volontaire, puis cliquez sur une journée pour cocher/décocher un congé, ou cliquez
+          sur deux dates pour cocher toute la période (de date à dates).
+        </p>
+        <div class="calendar-toolbar">
+          <select class="select" id="conges-volontaire" aria-label="Volontaire"></select>
+          <button type="button" class="btn btn--secondary btn--sm" id="conges-prev" aria-label="Mois précédent">◀</button>
+          <h2 class="calendar-month-label" id="conges-month-label"></h2>
+          <button type="button" class="btn btn--secondary btn--sm" id="conges-next" aria-label="Mois suivant">▶</button>
+          <button type="button" class="btn btn--secondary btn--sm" id="conges-today">Aujourd'hui</button>
+        </div>
+        <div class="calendar" id="conges-calendar"></div>
+        <p class="calendar-selection" id="conges-selection"></p>
+        <div class="view-header">
+          <h2 class="view-title">Périodes de congés</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="conges-table">
+            <thead>
+              <tr>
+                <th>Volontaire</th>
+                <th>Du</th>
+                <th>Au</th>
+                <th>Jours</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="conges-body"></tbody>
+          </table>
+        </div>
+        <div id="conges-empty" class="empty-state" hidden>
+          <p>Aucun congé enregistré.</p>
+        </div>
+      </section>
+
+      <!-- ======= DOCUMENTS ======= -->
+      <section id="view-documents" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Documents</h1>
+          <button class="btn btn--primary" id="btn-document-add">Ajouter un document</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="documents-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Volontaire</th>
+                <th>Mission</th>
+                <th>Ajouté</th>
+                <th>Confidentiel</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="documents-body"></tbody>
+          </table>
+        </div>
+        <div id="documents-empty" class="empty-state" hidden>
+          <p>Aucun document enregistré.</p>
+        </div>
+      </section>
+
+      <!-- ======= RAPPORTS & STATISTIQUES ======= -->
+      <section id="view-rapports" class="view">
+        <div class="view-header">
+          <h1 class="view-title">Rapports &amp; statistiques</h1>
+          <button class="btn btn--primary" id="btn-export-csv">Exporter en CSV</button>
+        </div>
+        <div class="stats-grid" id="rapport-cards"></div>
+        <div class="dashboard-columns">
+          <div class="panel">
+            <h2 class="panel__title">Volontaires par ville</h2>
+            <div id="chart-volontaires-ville" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Situation des volontaires</h2>
+            <div id="chart-volontaires-situation" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Missions par domaine</h2>
+            <div id="chart-missions-domaine" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Formations par statut</h2>
+            <div id="chart-formations-statut" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Formations par type</h2>
+            <div id="chart-formations-type" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel__title">Points de suivi par type</h2>
+            <div id="chart-points-type" class="bar-chart"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======= Panneau de saisie / détail (en page) ======= -->
+    <section class="detail-panel" id="detail-panel" hidden aria-labelledby="detail-panel-title">
+      <div class="detail-panel__header">
+        <h2 class="detail-panel__title" id="detail-panel-title"></h2>
+        <button class="btn btn--sm btn--secondary" id="detail-panel-close">Fermer</button>
+      </div>
+      <div class="detail-panel__body" id="detail-panel-body"></div>
+    </section>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
